@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/starminds.github.io/m-movie-dummy/static/css/main.9bf80ff5.css",
+    "main.js": "/starminds.github.io/m-movie-dummy/static/js/main.e52de7f0.js",
+    "index.html": "/starminds.github.io/m-movie-dummy/index.html",
+    "main.9bf80ff5.css.map": "/starminds.github.io/m-movie-dummy/static/css/main.9bf80ff5.css.map",
+    "main.e52de7f0.js.map": "/starminds.github.io/m-movie-dummy/static/js/main.e52de7f0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9bf80ff5.css",
+    "static/js/main.e52de7f0.js"
+  ]
+}
