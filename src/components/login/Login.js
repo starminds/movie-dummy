@@ -1,74 +1,80 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { mainStyle } from "../styles/globalStyle";
 
 const userDB = {
   dbusername: "test",
-  dbpw: "123123123",
+  dbpw: "a123123123",
 };
 
 const Wrap = styled.div`
-  height: 65vh;
-  background: ${mainStyle.bgcolor};
-  padding: ${mainStyle.padding};
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 150px auto;
 `;
 
 const LoginWrap = styled.div`
-  width: 300px;
-  height: 700px;
-  border: 2px solid;
-  text-align: center;
-`;
-
-const Logo = styled.div`
-  width: 200px;
-  height: 200px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid ${mainStyle.mainColor};
   align-items: center;
-  background: ${mainStyle.mainColor};
-  border: 2px solid;
-  margin: 100px auto;
-  p {
-    font-size: 40px;
-    font-weight: 600;
+  padding: 80px 50px;
+  border-radius: 10px;
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    input {
+      all: unset;
+      border: 1px solid ${mainStyle.mainColor};
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+    }
   }
 `;
 
-const Con = styled.div`
-  height: 150px;
-`;
-
-const Idcon = styled.div`
-  font-size: 20px;
-  font-weight: 400;
-  margin: 20px auto;
-`;
-
-const Password = styled.div`
-  font-size: 20px;
-  font-weight: 400;
-  margin: 20px auto;
-`;
-
-const SLogin = styled.div`
-  font-size: 20px;
-  font-weight: 400;
-`;
-
-const Join = styled.div`
+const TitleBox = styled.div`
+  width: 250px;
+  height: 50px;
+  border: 2px solid;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
 `;
-const Idsuh = styled.div``;
 
-const Pasuh = styled.div``;
+const Logo = styled.div`
+  p {
+    font-size: 30px;
+    font-weight: 500;
+    color: ${mainStyle.mainColor};
+  }
+`;
+
+const Button = styled.div`
+  all: unset;
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  background-color: ${mainStyle.mainColor};
+  box-sizing: border-box;
+  color: ${mainStyle.bgcolor};
+  border-radius: 10px;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: 0.5s;
+`;
+const ErrorMessage = styled.div`
+  font-weight: 900;
+  color: ${mainStyle.mainColor};
+  margin-bottom: 10px;
+`;
 
 export const Login = () => {
   const navigate = useNavigate;
@@ -83,41 +89,83 @@ export const Login = () => {
   });
 
   const onSubmit = () => {
-    const { username, Password } = getValues();
+    const { username, password } = getValues();
     const { dbusername, dbpw } = userDB;
 
     if (username !== dbusername) {
       setError("usernameResult", { message: "아이디가 틀렸습니다" });
     }
-    if (Password !== dbpw) {
-      setError("passwordResult", { message: "비밀번호가 틀렸습니다." });
+
+    if (password !== dbpw) {
+      setError("passwordResult", { message: "비밀번호가 틀렸습니다" });
+    }
+
+    if (username === dbusername && password === dbpw) {
+      navigate("/");
     }
   };
 
-  return;
+  console.log(errors);
 
-  // <Wrap>
-  //   <LoginWrap>
-  //     <Logo>
-  //       <p>M-movie</p>
-  //     </Logo>
-  //     <Con>
-  //       <input {...register("username",{
-  //         required:"아이디는 필수 입니다.",
-  //         minLength:{
-  //           value:3,
-  //           message:"아이디는 3자리 이상 작성해 주세요",
-  //         },
-  //       })}
+  return (
+    <Wrap>
+      <LoginWrap>
+        <TitleBox>
+          <Logo>
+            <Link to={"/"}>
+              <p>M-movie</p>
+            </Link>
+          </Logo>
+        </TitleBox>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            {...register("username", {
+              required: "아이디는 필수 입니다.",
+              minLength: {
+                value: 3,
+                message: "아이디는 3자리 이상 작성해 주세요",
+              },
+            })}
+            type="text"
+            placeholder="이메일이나 아이디를 입력 해 주세여"
+          />
 
-  //       >
-  //       <Password>비밀번호</Password>
-  //       <SLogin>로그인</SLogin>
-  //     </Con>
-  //     <Join>
-  //       <Idsuh>아이디찾기</Idsuh>
-  //       <Pasuh>비밀번호찾기</Pasuh>
-  //     </Join>
-  //   </LoginWrap>
-  // </Wrap>
+          {errors?.username?.message && (
+            <ErrorMessage>{errors?.username?.message}</ErrorMessage>
+          )}
+          {errors?.usernameResult?.message && (
+            <ErrorMessage>{errors?.usernameResult?.message}</ErrorMessage>
+          )}
+          <input
+            {...register("password", {
+              required: "패스워드는 필수 입니다.",
+              minLength: {
+                value: 8,
+                message: "패스워드는 8자리 이상 작성해주세요",
+              },
+              pattern: {
+                value: /^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$/,
+                message:
+                  "패스워드는 8자리이상 문자,숫자조합으로 작성하셔야 됩니다 ",
+              },
+            })}
+            type="password"
+            placeholder="패스워드"
+          />
+          {errors?.password?.message && (
+            <ErrorMessage>{errors?.password?.message}</ErrorMessage>
+          )}
+          {errors?.passwordResult?.message && (
+            <ErrorMessage>{errors?.passwordResult?.message}</ErrorMessage>
+          )}
+          <Button
+            opacity={isValid ? 1 : 0.5}
+            cursor={isValid ? "pointer" : "auto"}
+          >
+            로그인
+          </Button>
+        </form>
+      </LoginWrap>
+    </Wrap>
+  );
 };

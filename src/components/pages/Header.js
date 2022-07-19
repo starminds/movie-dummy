@@ -15,7 +15,6 @@ import { useState } from "react";
 
 const SHeader = styled.div`
   width: 100%;
-  max-width: 100%;
   height: 80px;
   display: flex;
   justify-content: space-between;
@@ -32,14 +31,16 @@ const SHeader = styled.div`
 `;
 
 const Logo = styled.div`
-  width: 220px;
   p {
     font-size: 30px;
     font-weight: 900;
     color: #eeeeee;
   }
   @media screen and (max-width: 500px) {
-    font-size: 24px;
+    width: 100px;
+    p {
+      font-size: 24px;
+    }
   }
 `;
 

@@ -6,6 +6,9 @@ import { imgUrl } from "../component/content";
 import { mainStyle } from "../styles/globalStyle";
 import { movieApi } from "../api";
 import { Loading } from "../Loading";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import { Navigation } from "swiper";
 
 const Wrap = styled.div`
   height: 100vh;
@@ -14,6 +17,12 @@ const Wrap = styled.div`
   justify-content: space-between;
   padding-top: 200px;
   position: relative;
+  @media screen and (max-width: 500px) {
+    display: block;
+    padding-top: 100px;
+    margin-top: 70px;
+    padding: ${mainStyle.moPadding};
+  }
 `;
 
 const Con = styled.div`
@@ -22,12 +31,27 @@ const Con = styled.div`
   &:nth-child(1) {
     height: 80vh;
   }
+  @media screen and (max-width: 500px) {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    /* padding: ${mainStyle.moPadding}; */
+  }
 `;
 
 const Title = styled.h3`
   font-size: 60px;
   font-weight: 700;
   margin-bottom: 40px;
+
+  @media screen and (max-width: 500px) {
+    height: 100px;
+    margin-top: 25px;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+  }
 `;
 
 const Release = styled.div`
@@ -192,33 +216,36 @@ const SCon = styled.div`
 const Stitle = styled.div`
   font-size: 18px;
   margin-top: 20px;
+  color: ${mainStyle.mainColor};
 `;
-// const IframeBox = styled.div``;
+const IframeBox = styled.div``;
 
-// const Iframe = styled.iframe`
-//   width: 100%;
-//   height: 800px;
-//   margin-top: 150px;
-//   border: 2px solid;
-// `;
+const Iframe = styled.iframe`
+  width: 100%;
+  height: 800px;
+  margin-top: 150px;
+  border: 2px solid;
+`;
 
-// const Bg = styled.div`
-//   width: 100%;
-//   height: 50%;
-//   background: linear-gradient(
-//     180deg,
-//     rgba(2, 0, 36, 0) 0% rgba(0, 0, 0, 1) 100%
-//   );
-//   position: absolute;
-//   bottom: 5%;
-//   left: 0;
-// `;
+const Bg = styled.div`
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(2, 0, 36, 0) 0% rgba(0, 0, 0, 1) 100%
+  );
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+`;
+
 export const MovieDetall = ({ movieData }) => {
   const [movieViedo, setmovieViedo] = useState();
   const [similar, setSimilar] = useState();
   const { id } = useParams();
-  console.log(id);
+  const [movieData1, setmovieData1] = useState(movieData);
 
+  console.log(movieData1);
   useEffect(() => {
     const movieViedo = async () => {
       try {
@@ -236,64 +263,100 @@ export const MovieDetall = ({ movieData }) => {
     movieViedo();
   }, []);
 
+  const handleClick = async (a) => {
+    const { data: detailData } = await movieApi.moviedetail(a);
+    setmovieData1(detailData);
+  };
+  const params = {
+    breakpoints: {
+      320: {
+        slidesPerView: 2.2,
+        spaceBetween: 10,
+      },
+      640: {
+        slidesPerView: 5.2,
+        spaceBetween: 20,
+      },
+    },
+  };
   return (
-    <Wrap
-      style={{
-        background: `url(${
-          movieData.backdrop_path
-            ? `${imgUrl}/${movieData.backdrop_path}`
-            : "http://www.gbe.kr/images/co/na/noImg.gif"
-        }) no-repeat center/cover`,
-      }}
-    >
-      <Con>
-        <Title>{movieData.title}</Title>
-        <Release>개봉일: {movieData.release_date}</Release>
-        <RunTime>{movieData.runtime}분</RunTime>
-        <Genres>
-          {movieData.genres.map((genre) => (
-            <li key={genre.id}>{genre.name}</li>
-          ))}
-        </Genres>
-
-        <LineUp>
-          <StartBt>
-            <a href="https://www.youtube.com/">
-              <p>재생</p>
-            </a>
-          </StartBt>
-          <PreviewBt>
-            <text>Preview</text>
-          </PreviewBt>
-          <Button>
-            <Link to={"/InterestMovie"}>
-              <text>+</text>
-            </Link>
-          </Button>
-        </LineUp>
-        <Desc>{movieData.overview.slice(0, 100) + "...."}</Desc>
-      </Con>
-      <ConWrap>
-        <Consimilar>
-          <text>추천작</text>
-          <ConLine></ConLine>
-        </Consimilar>
-        <WConWrap>
-          {similar &&
-            similar.map((simil) => (
-              <div key={simil.id}>
-                <Link to={`/detail/${simil.id}`}>
-                  <SCon
-                    style={{
-                      background: `url(${imgUrl}${simil.backdrop_path}) no-reapeat center/cover`,
-                    }}
-                  ></SCon>
-                  <Stitle>{simil.title}</Stitle>
-                </Link>
-              </div>
+    <div>
+      <Wrap
+        style={{
+          background: `url(${
+            movieData1.backdrop_path
+              ? `${imgUrl}/${movieData1.backdrop_path}`
+              : "http://www.gbe.kr/images/co/na/noImg.gif"
+          }) no-repeat center/cover`,
+        }}
+      >
+        <Con>
+          <Title>{movieData1.title}</Title>
+          <Release>개봉일: {movieData1.release_date}</Release>
+          <RunTime>{movieData1.runtime}분</RunTime>
+          <Genres>
+            {movieData1.genres.map((genre) => (
+              <li key={genre.id}>{genre.name}</li>
             ))}
-        </WConWrap>
-      </ConWrap>
-    </Wrap>
+          </Genres>
+
+          <LineUp>
+            <StartBt>
+              <a href="https://www.youtube.com/">
+                <p>재생</p>
+              </a>
+            </StartBt>
+            <PreviewBt>
+              <text>Preview</text>
+            </PreviewBt>
+            <Button>
+              <Link to={"/InterestMovie"}>
+                <text>+</text>
+              </Link>
+            </Button>
+          </LineUp>
+          <Desc>{movieData1.overview.slice(0, 100) + "...."}</Desc>
+        </Con>
+        <ConWrap>
+          <Consimilar>
+            <text>추천작</text>
+            <ConLine></ConLine>
+          </Consimilar>
+          <WConWrap>
+            <Swiper modules={[Navigation]} navigation {...params}>
+              {similar &&
+                similar.map((simil) => (
+                  <SwiperSlide key={simil.id}>
+                    <Link to={`/detail/${simil.id}`}>
+                      <SCon
+                        onClick={() => {
+                          handleClick(`${simil.id}`);
+                        }}
+                        style={{
+                          background: `url(${imgUrl}${simil.backdrop_path}) no-repeat center/cover`,
+                        }}
+                      ></SCon>
+                      <Stitle>
+                        <h3>{simil.title}</h3>
+                      </Stitle>
+                    </Link>
+                  </SwiperSlide>
+                ))}
+            </Swiper>
+          </WConWrap>
+        </ConWrap>
+      </Wrap>
+      <IframeBox>
+        {movieViedo ? (
+          <Iframe
+            style={{
+              background: `url(${imgUrl}${movieViedo.backdrop_path})no-reapeat center/cover`,
+            }}
+            src={`https://www.youtube.com/embed/${movieViedo}`}
+            allowFullScreen
+          ></Iframe>
+        ) : null}
+      </IframeBox>
+    </div>
   );
 };

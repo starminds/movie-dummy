@@ -13,6 +13,9 @@ ${reset}
 *{
     box-sizing: border-box;
 }
+li{
+    list-style: none;
+}
 
 body{
 
